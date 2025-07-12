@@ -264,3 +264,115 @@ document.addEventListener('keydown', function(e) {
         getRandomRecipe();
     }
 });
+
+let isLoginMode = true;
+
+function toggleAuthMode() {
+    isLoginMode = !isLoginMode;
+    document.getElementById("authTitle").innerText = isLoginMode ? "Login" : "Sign Up";
+    document.getElementById("authToggleText").innerHTML = isLoginMode
+        ? `Don't have an account? <a href="#" onclick="toggleAuthMode()">Sign up here</a>`
+        : `Already have an account? <a href="#" onclick="toggleAuthMode()">Login here</a>`;
+    document.getElementById("authError").innerText = '';
+}
+
+function handleAuth() {
+    const email = document.getElementById("authEmail").value.trim();
+    const password = document.getElementById("authPassword").value.trim();
+    const errorDiv = document.getElementById("authError");
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    if (!email || !password) {
+        errorDiv.innerText = "Please fill in all fields.";
+        return;
+    }
+    if (!emailRegex.test(email)) {
+        errorDiv.innerText = "Invalid email format.";
+        return;
+    }
+
+    const users = JSON.parse(localStorage.getItem("users") || "{}");
+
+    if (isLoginMode) {
+        if (!users[email] || users[email] !== password) {
+            errorDiv.innerText = "Incorrect email or password.";
+            return;
+        }
+    } else {
+        if (users[email]) {
+            errorDiv.innerText = "Email is already registered.";
+            return;
+        }
+        users[email] = password;
+        localStorage.setItem("users", JSON.stringify(users));
+    }
+
+    localStorage.setItem("loggedInUser", email);
+
+    document.getElementById("authModal").style.display = "none";
+    document.querySelector(".container").style.display = "block";
+    document.getElementById("userInfo").classList.remove("hidden");
+    document.getElementById("logoutBtn").style.display = "inline-block";
+    document.getElementById("userEmail").innerText = email;
+
+    displayRecipes(recipes);
+}
+
+document.addEventListener("DOMContentLoaded", function () {
+    const userInfo = document.getElementById("userInfo");
+    const logoutBtn = document.getElementById("logoutBtn");
+    const userEmail = document.getElementById("userEmail");
+    const user = localStorage.getItem("loggedInUser");
+
+    userInfo.classList.remove("hidden");
+
+    if (!user) {
+        document.getElementById("authModal").style.display = "flex";
+        document.querySelector(".container").style.display = "none";
+        userEmail.innerText = "";
+        logoutBtn.style.display = "none";
+    } else {
+        document.getElementById("authModal").style.display = "none";
+        document.querySelector(".container").style.display = "block";
+        userEmail.innerText = user;
+        logoutBtn.style.display = "inline-block";
+        displayRecipes(recipes);
+    }
+});
+
+function confirmLogout() {
+    document.getElementById("logoutConfirmModal").classList.remove("hidden");
+}
+
+function closeLogoutConfirm() {
+    document.getElementById("logoutConfirmModal").classList.add("hidden");
+}
+
+function logoutUser() {
+    localStorage.removeItem("loggedInUser");
+    document.getElementById("logoutConfirmModal").classList.add("hidden");
+    document.getElementById("authModal").style.display = "flex";
+    document.querySelector(".container").style.display = "none";
+    document.getElementById("userEmail").innerText = "";
+    document.getElementById("logoutBtn").style.display = "none";
+}
+
+function logoutUser() {
+    localStorage.removeItem("loggedInUser");
+
+    document.getElementById("logoutConfirmModal").classList.add("hidden");
+
+    document.getElementById("authModal").style.display = "flex";
+    document.querySelector(".container").style.display = "none";
+
+    document.getElementById("userEmail").innerText = "";
+
+    document.getElementById("logoutBtn").style.display = "none";
+
+    document.getElementById("authEmail").value = "";
+    document.getElementById("authPassword").value = "";
+
+    document.getElementById("authError").innerText = "";
+}
+
+

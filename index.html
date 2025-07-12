@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -10,16 +9,20 @@
 <body>
     <div class="container">
         <header>
+            <div class="auth-user-info" id="userInfo">
+    <div id="userEmail" class="user-email"></div>
+    <button id="logoutBtn" class="logout-btn" onclick="confirmLogout()">Logout</button>
+</div>
+
             <h1>Special Recipes</h1>
             <p class="subtitle">Authentic Filipino Recipes</p>
             <div class="search-container">
                 <input type="text" id="searchInput" placeholder="Search for Recipes... (e.g., Chicken Adobo, Sinigang)">
             </div>
+            <button id="logoutBtn" class="logout-btn hidden" onclick="logoutUser()">Logout</button>
         </header>
 
-        <div class="recipes-grid" id="recipesContainer">
-            
-        </div>
+        <div class="recipes-grid" id="recipesContainer"></div>
 
         <footer class="footer">
             <p>🇵🇭 Made with love for Filipino cuisine enthusiasts worldwide</p>
@@ -27,6 +30,29 @@
         </footer>
     </div>
 
+    <div id="authModal" class="auth-modal">
+        <div class="auth-overlay" style="position: fixed; top: 0; left: 0; right: 0; bottom: 0; backdrop-filter: blur(6px); background-color: rgba(0, 0, 0, 0.4);"></div>
+        <div class="auth-content">
+            <h2 id="authTitle">Login</h2>
+            <input type="email" id="authEmail" placeholder="Email">
+            <input type="password" id="authPassword" placeholder="Password">
+            <button id="authButton" onclick="handleAuth()">Continue</button>
+            <p id="authToggleText">Don't have an account? <a href="#" onclick="toggleAuthMode()">Sign up here</a></p>
+            <p id="authError" class="error-message"></p>
+        </div>
+    </div>
+
     <script src="script.js"></script>
+<div id="logoutConfirmModal" class="auth-modal hidden">
+    <div class="auth-overlay"></div>
+    <div class="auth-content">
+        <h2>Are you sure you want to logout?</h2>
+        <div style="display: flex; justify-content: center; gap: 20px; margin-top: 20px;">
+            <button onclick="logoutUser()">Yes</button>
+            <button onclick="closeLogoutConfirm()">No</button>
+        </div>
+    </div>
+</div>
+
 </body>
 </html>
